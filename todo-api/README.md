@@ -1,103 +1,140 @@
-# 📝 Todo API — Spring Boot 3 + Java 21
+# TaskFlow — Gestor de Tareas
 
-API REST completa para gestión de tareas (To-Do) con Spring Boot, JPA y base de datos H2 en memoria.
-
----
-
-## 🚀 Requisitos
-
-- Java 21+
-- Maven 3.9+
+API REST + Frontend web para gestionar tareas organizadas por roles. Spring Boot, JPA, H2 y vanilla JS.
 
 ---
 
-## ▶️ Ejecutar el proyecto
+## Ejecutar
 
 ```bash
-# Compilar y ejecutar
+cd todo-api
 mvn spring-boot:run
-
-# Ejecutar tests
-mvn test
-
-# Generar JAR ejecutable
-mvn clean package
-java -jar target/todo-api-1.0.0.jar
 ```
 
----
-
-## 🌐 Endpoints disponibles
-
-Base URL: `http://localhost:8080/api/tasks`
-
-| Método   | Endpoint                  | Descripción                        |
-|----------|---------------------------|------------------------------------|
-| GET      | `/api/tasks`              | Listar todas las tareas            |
-| GET      | `/api/tasks?completed=true` | Filtrar por estado               |
-| GET      | `/api/tasks?priority=HIGH`  | Filtrar por prioridad            |
-| GET      | `/api/tasks?search=texto`   | Buscar por título                |
-| GET      | `/api/tasks/{id}`         | Obtener tarea por ID               |
-| POST     | `/api/tasks`              | Crear nueva tarea                  |
-| PUT      | `/api/tasks/{id}`         | Actualizar tarea completa          |
-| PATCH    | `/api/tasks/{id}/toggle`  | Marcar/desmarcar como completada   |
-| DELETE   | `/api/tasks/{id}`         | Eliminar tarea                     |
+Abrir `http://localhost:8080`
 
 ---
 
-## 📦 Ejemplo de request
+## Endpoints
+
+### Tareas
+
+| Metodo | Endpoint | Descripcion |
+|--------|----------|-------------|
+| GET | `/api/tasks` | Listar todas |
+| GET | `/api/tasks?completed=true` | Filtrar por estado |
+| GET | `/api/tasks?priority=HIGH` | Filtrar por prioridad |
+| GET | `/api/tasks?roleId=1` | Filtrar por rol |
+| GET | `/api/tasks?search=texto` | Buscar por titulo |
+| GET | `/api/tasks/{id}` | Obtener por ID |
+| POST | `/api/tasks` | Crear tarea |
+| PUT | `/api/tasks/{id}` | Actualizar tarea |
+| PATCH | `/api/tasks/{id}/toggle` | Marcar completada |
+| DELETE | `/api/tasks/{id}` | Eliminar tarea |
+
+### Roles
+
+| Metodo | Endpoint | Descripcion |
+|--------|----------|-------------|
+| GET | `/api/roles` | Listar todos |
+| GET | `/api/roles?activeOnly=true` | Solo activos |
+| GET | `/api/roles/{id}` | Obtener por ID |
+| POST | `/api/roles` | Crear rol |
+| PUT | `/api/roles/{id}` | Actualizar rol |
+| PATCH | `/api/roles/{id}/toggle` | Activar/desactivar |
+| DELETE | `/api/roles/{id}` | Eliminar rol |
+
+---
+
+## Ejemplos
+
+### Crear tarea
 
 ```json
 POST /api/tasks
-Content-Type: application/json
-
 {
-  "title": "Aprender Spring Boot",
-  "description": "Completar el tutorial oficial",
-  "priority": "HIGH"
+  "title": "Revisar PR",
+  "description": "Revisar el pull request #42",
+  "priority": "HIGH",
+  "roleId": 1
 }
 ```
 
-Prioridades válidas: `LOW`, `MEDIUM`, `HIGH`
+### Crear rol
+
+```json
+POST /api/roles
+{
+  "name": "Frontend",
+  "description": "Tareas de desarrollo de interfaz"
+}
+```
+
+Prioridades: `LOW`, `MEDIUM`, `HIGH`
 
 ---
 
-## 🔧 Consola H2 (desarrollo)
+## Frontend
 
-Disponible en: `http://localhost:8080/h2-console`
+Interfaz web incluida en `src/main/resources/static/`:
 
-- **JDBC URL:** `jdbc:h2:mem:tododb`
-- **Usuario:** `sa`
-- **Contraseña:** *(vacía)*
+- Panel lateral con navegacion
+- Vista de tareas con filtros por estado, prioridad y rol
+- Vista de roles con contador de tareas
+- Busqueda en tiempo real
+- Formularios de creacion y edicion
+- Soporte dark mode
+- Responsive (mobile-first)
+- Accesibilidad: ARIA, navegacion por teclado, focus visible
 
 ---
 
-## 🏗️ Estructura del proyecto
+## Estructura
 
 ```
 src/main/java/com/todoapi/
-├── TodoApiApplication.java       # Punto de entrada
-├── DataLoader.java               # Datos de prueba
-├── controller/
-│   └── TaskController.java       # Endpoints REST
-├── service/
-│   └── TaskService.java          # Lógica de negocio
-├── repository/
-│   └── TaskRepository.java       # Acceso a datos (JPA)
+├── TodoApiApplication.java
+├── DataLoader.java
 ├── model/
-│   └── Task.java                 # Entidad JPA
+│   ├── Task.java
+│   └── Role.java
 ├── dto/
-│   └── TaskDTO.java              # Request/Response DTOs
+│   ├── TaskDTO.java
+│   └── RoleDTO.java
+├── repository/
+│   ├── TaskRepository.java
+│   └── RoleRepository.java
+├── service/
+│   ├── TaskService.java
+│   └── RoleService.java
+├── controller/
+│   ├── TaskController.java
+│   └── RoleController.java
 └── exception/
     ├── TaskNotFoundException.java
+    ├── RoleNotFoundException.java
     └── GlobalExceptionHandler.java
+
+src/main/resources/static/
+├── index.html
+├── styles.css
+├── app.js
+└── logo.svg
 ```
 
 ---
 
-## 📌 Próximos pasos sugeridos
+## Tecnologias
 
-- [ ] Agregar Swagger/OpenAPI (`springdoc-openapi`)
-- [ ] Implementar Spring Security + JWT
-- [ ] Migrar a PostgreSQL con Docker Compose
-- [ ] Configurar CI/CD con GitHub Actions
+- Java 17
+- Spring Boot 3.2
+- Spring Data JPA
+- H2 Database (en memoria)
+- HTML / CSS / JavaScript (vanilla)
+
+---
+
+## Requisitos
+
+- Java 17+
+- Maven 3.9+

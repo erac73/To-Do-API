@@ -21,35 +21,30 @@ public class TaskController {
         this.service = service;
     }
 
-    // GET /api/tasks               → Todas las tareas
-    // GET /api/tasks?completed=true → Filtrar por estado
-    // GET /api/tasks?priority=HIGH  → Filtrar por prioridad
-    // GET /api/tasks?search=texto   → Buscar por título
     @GetMapping
     public ResponseEntity<List<TaskResponse>> getAll(
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) Task.Priority priority,
+            @RequestParam(required = false) Long roleId,
             @RequestParam(required = false) String search
     ) {
         if (completed != null) return ResponseEntity.ok(service.findByStatus(completed));
         if (priority != null)  return ResponseEntity.ok(service.findByPriority(priority));
+        if (roleId != null)    return ResponseEntity.ok(service.findByRoleId(roleId));
         if (search != null)    return ResponseEntity.ok(service.search(search));
         return ResponseEntity.ok(service.findAll());
     }
 
-    // GET /api/tasks/{id}
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    // POST /api/tasks
     @PostMapping
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
-    // PUT /api/tasks/{id}
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> update(
             @PathVariable Long id,
@@ -58,13 +53,11 @@ public class TaskController {
         return ResponseEntity.ok(service.update(id, request));
     }
 
-    // PATCH /api/tasks/{id}/toggle
     @PatchMapping("/{id}/toggle")
     public ResponseEntity<TaskResponse> toggle(@PathVariable Long id) {
         return ResponseEntity.ok(service.toggleCompleted(id));
     }
 
-    // DELETE /api/tasks/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

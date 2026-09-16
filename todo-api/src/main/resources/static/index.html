@@ -3,129 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mis Tareas</title>
+  <title>TaskFlow — Gestor de Tareas</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="app-header">
-    <h1>Mis Tareas</h1>
-    <p class="subtitle" id="task-summary"></p>
-  </header>
-
-  <main class="app-main">
-    <section class="add-task-section" aria-label="Nueva tarea">
-      <form id="task-form" class="task-form" novalidate>
-        <div class="form-row">
-          <input
-            type="text"
-            id="task-title"
-            class="input-title"
-            placeholder="¿Qué necesitas hacer?"
-            maxlength="150"
-            required
-            aria-label="Título de la tarea"
-          >
-          <button type="submit" class="btn-add" aria-label="Agregar tarea">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Agregar
-          </button>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="var(--accent)"/>
+            <path d="M9 16.5l4.5 4.5L23 11" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="logo-text">TaskFlow</span>
         </div>
-        <div class="form-details">
-          <textarea
-            id="task-description"
-            class="input-description"
-            placeholder="Descripcion opcional (max. 500 caracteres)"
-            maxlength="500"
-            rows="2"
-            aria-label="Descripcion de la tarea"
-          ></textarea>
-          <div class="form-meta">
-            <label for="task-priority" class="sr-only">Prioridad</label>
-            <select id="task-priority" class="select-priority" aria-label="Prioridad">
-              <option value="LOW">Baja</option>
-              <option value="MEDIUM" selected>Media</option>
-              <option value="HIGH">Alta</option>
-            </select>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="tasks" aria-label="Ver tareas">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 10h6M7 7h6M7 13h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Tareas</span>
+        </button>
+        <button class="nav-item" data-view="roles" aria-label="Gestionar roles">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Roles</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="stats-mini">
+          <div class="stat-mini">
+            <span class="stat-value" id="stat-total">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-mini">
+            <span class="stat-value" id="stat-done">0</span>
+            <span class="stat-label">Hechas</span>
           </div>
         </div>
-      </form>
-    </section>
+      </div>
+    </aside>
 
-    <section class="filters-section" aria-label="Filtros">
-      <div class="filters" role="tablist" aria-label="Filtrar por estado">
-        <button class="filter-btn active" role="tab" aria-selected="true" data-filter="all">
-          Todas
+    <main class="main">
+      <header class="main-header">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
-        <button class="filter-btn" role="tab" aria-selected="false" data-filter="pending">
-          Pendientes
+        <h1 class="page-title" id="page-title">Tareas</h1>
+        <button class="btn-primary" id="add-btn">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Nueva tarea</span>
         </button>
-        <button class="filter-btn" role="tab" aria-selected="false" data-filter="completed">
-          Completadas
-        </button>
-      </div>
-      <div class="search-wrapper">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <input
-          type="search"
-          id="search-input"
-          class="search-input"
-          placeholder="Buscar tarea..."
-          aria-label="Buscar tarea por titulo"
-        >
-      </div>
-    </section>
+      </header>
 
-    <section class="tasks-section" aria-label="Lista de tareas">
-      <ul id="task-list" class="task-list" role="list" aria-live="polite">
-      </ul>
-      <div id="empty-state" class="empty-state" hidden>
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <rect x="8" y="6" width="32" height="36" rx="4" stroke="currentColor" stroke-width="2"/>
-          <path d="M16 18h16M16 26h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <p>No hay tareas aun</p>
-        <span>Agrega tu primera tarea arriba</span>
-      </div>
-      <div id="loading-state" class="loading-state" hidden>
-        <div class="spinner" aria-hidden="true"></div>
-        <span>Cargando tareas...</span>
-      </div>
-    </section>
-  </main>
+      <!-- Tasks View -->
+      <section class="view active" id="tasks-view">
+        <div class="toolbar">
+          <div class="filters" role="tablist">
+            <button class="filter-chip active" role="tab" aria-selected="true" data-filter="all">Todas</button>
+            <button class="filter-chip" role="tab" aria-selected="false" data-filter="pending">Pendientes</button>
+            <button class="filter-chip" role="tab" aria-selected="false" data-filter="completed">Completadas</button>
+          </div>
+          <div class="search-box">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="search" id="search-input" class="search-input" placeholder="Buscar..." aria-label="Buscar tarea">
+          </div>
+        </div>
 
-  <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+        <div class="role-filter-bar" id="role-filter-bar">
+          <button class="role-tag active" data-role="all">Todos los roles</button>
+        </div>
 
-  <dialog id="edit-dialog" class="edit-dialog" aria-labelledby="dialog-title">
-    <form id="edit-form" method="dialog" novalidate>
-      <h2 id="dialog-title">Editar tarea</h2>
-      <input type="hidden" id="edit-id">
-      <div class="dialog-field">
-        <label for="edit-title">Titulo</label>
-        <input type="text" id="edit-title" maxlength="150" required>
+        <ul class="task-list" id="task-list" role="list" aria-live="polite"></ul>
+
+        <div class="empty-state" id="empty-tasks" hidden>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+            <rect x="10" y="8" width="36" height="40" rx="4" stroke="currentColor" stroke-width="2" opacity=".3"/>
+            <path d="M20 20h16M20 28h12M20 36h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".3"/>
+          </svg>
+          <p>No hay tareas</p>
+          <span>Crea tu primera tarea para comenzar</span>
+        </div>
+      </section>
+
+      <!-- Roles View -->
+      <section class="view" id="roles-view">
+        <div class="roles-grid" id="roles-grid"></div>
+
+        <div class="empty-state" id="empty-roles" hidden>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+            <circle cx="28" cy="20" r="8" stroke="currentColor" stroke-width="2" opacity=".3"/>
+            <path d="M12 48c0-8.8 7.2-16 16-16s16 7.2 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".3"/>
+          </svg>
+          <p>No hay roles</p>
+          <span>Crea un rol para organizar tus tareas</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Task Dialog -->
+  <dialog id="task-dialog" class="dialog" aria-labelledby="task-dialog-title">
+    <form id="task-form" method="dialog" novalidate>
+      <h2 id="task-dialog-title">Nueva tarea</h2>
+      <input type="hidden" id="task-id">
+      <div class="field">
+        <label for="task-title">Titulo <span class="required">*</span></label>
+        <input type="text" id="task-title" maxlength="150" required placeholder="Ej: Revisar pull request">
       </div>
-      <div class="dialog-field">
-        <label for="edit-description">Descripcion</label>
-        <textarea id="edit-description" maxlength="500" rows="3"></textarea>
+      <div class="field">
+        <label for="task-desc">Descripcion</label>
+        <textarea id="task-desc" maxlength="500" rows="3" placeholder="Detalles opcionales..."></textarea>
       </div>
-      <div class="dialog-field">
-        <label for="edit-priority">Prioridad</label>
-        <select id="edit-priority">
-          <option value="LOW">Baja</option>
-          <option value="MEDIUM">Media</option>
-          <option value="HIGH">Alta</option>
-        </select>
+      <div class="field-row">
+        <div class="field">
+          <label for="task-priority">Prioridad</label>
+          <select id="task-priority">
+            <option value="LOW">Baja</option>
+            <option value="MEDIUM" selected>Media</option>
+            <option value="HIGH">Alta</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="task-role">Rol</label>
+          <select id="task-role">
+            <option value="">Sin rol</option>
+          </select>
+        </div>
       </div>
-      <div class="dialog-actions">
-        <button type="button" class="btn-cancel" id="dialog-cancel">Cancelar</button>
-        <button type="submit" class="btn-save">Guardar</button>
+      <div class="dialog-footer">
+        <button type="button" class="btn-ghost" id="task-cancel">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
       </div>
     </form>
   </dialog>
+
+  <!-- Role Dialog -->
+  <dialog id="role-dialog" class="dialog" aria-labelledby="role-dialog-title">
+    <form id="role-form" method="dialog" novalidate>
+      <h2 id="role-dialog-title">Nuevo rol</h2>
+      <input type="hidden" id="role-id">
+      <div class="field">
+        <label for="role-name">Nombre <span class="required">*</span></label>
+        <input type="text" id="role-name" maxlength="50" required placeholder="Ej: Desarrollo">
+      </div>
+      <div class="field">
+        <label for="role-desc">Descripcion</label>
+        <textarea id="role-desc" maxlength="200" rows="2" placeholder="Que hace este rol..."></textarea>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn-ghost" id="role-cancel">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Toast Container -->
+  <div id="toasts" class="toasts" aria-live="assertive" aria-atomic="true"></div>
 
   <script src="app.js"></script>
 </body>

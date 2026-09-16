@@ -30,6 +30,10 @@ public class Task {
     @Column(nullable = false)
     private Priority priority = Priority.MEDIUM;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -47,12 +51,10 @@ public class Task {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Enum de prioridad
     public enum Priority {
         LOW, MEDIUM, HIGH
     }
 
-    // Constructores
     public Task() {}
 
     public Task(String title, String description, Priority priority) {
@@ -61,7 +63,13 @@ public class Task {
         this.priority = priority;
     }
 
-    // Getters y Setters
+    public Task(String title, String description, Priority priority, Role role) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.role = role;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -76,6 +84,9 @@ public class Task {
 
     public Priority getPriority() { return priority; }
     public void setPriority(Priority priority) { this.priority = priority; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
