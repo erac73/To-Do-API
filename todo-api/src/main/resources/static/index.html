@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Tareas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>Mis Tareas</h1>
+    <p class="subtitle" id="task-summary"></p>
+  </header>
+
+  <main class="app-main">
+    <section class="add-task-section" aria-label="Nueva tarea">
+      <form id="task-form" class="task-form" novalidate>
+        <div class="form-row">
+          <input
+            type="text"
+            id="task-title"
+            class="input-title"
+            placeholder="¿Qué necesitas hacer?"
+            maxlength="150"
+            required
+            aria-label="Título de la tarea"
+          >
+          <button type="submit" class="btn-add" aria-label="Agregar tarea">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Agregar
+          </button>
+        </div>
+        <div class="form-details">
+          <textarea
+            id="task-description"
+            class="input-description"
+            placeholder="Descripcion opcional (max. 500 caracteres)"
+            maxlength="500"
+            rows="2"
+            aria-label="Descripcion de la tarea"
+          ></textarea>
+          <div class="form-meta">
+            <label for="task-priority" class="sr-only">Prioridad</label>
+            <select id="task-priority" class="select-priority" aria-label="Prioridad">
+              <option value="LOW">Baja</option>
+              <option value="MEDIUM" selected>Media</option>
+              <option value="HIGH">Alta</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="filters-section" aria-label="Filtros">
+      <div class="filters" role="tablist" aria-label="Filtrar por estado">
+        <button class="filter-btn active" role="tab" aria-selected="true" data-filter="all">
+          Todas
+        </button>
+        <button class="filter-btn" role="tab" aria-selected="false" data-filter="pending">
+          Pendientes
+        </button>
+        <button class="filter-btn" role="tab" aria-selected="false" data-filter="completed">
+          Completadas
+        </button>
+      </div>
+      <div class="search-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="search"
+          id="search-input"
+          class="search-input"
+          placeholder="Buscar tarea..."
+          aria-label="Buscar tarea por titulo"
+        >
+      </div>
+    </section>
+
+    <section class="tasks-section" aria-label="Lista de tareas">
+      <ul id="task-list" class="task-list" role="list" aria-live="polite">
+      </ul>
+      <div id="empty-state" class="empty-state" hidden>
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect x="8" y="6" width="32" height="36" rx="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M16 18h16M16 26h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <p>No hay tareas aun</p>
+        <span>Agrega tu primera tarea arriba</span>
+      </div>
+      <div id="loading-state" class="loading-state" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Cargando tareas...</span>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <dialog id="edit-dialog" class="edit-dialog" aria-labelledby="dialog-title">
+    <form id="edit-form" method="dialog" novalidate>
+      <h2 id="dialog-title">Editar tarea</h2>
+      <input type="hidden" id="edit-id">
+      <div class="dialog-field">
+        <label for="edit-title">Titulo</label>
+        <input type="text" id="edit-title" maxlength="150" required>
+      </div>
+      <div class="dialog-field">
+        <label for="edit-description">Descripcion</label>
+        <textarea id="edit-description" maxlength="500" rows="3"></textarea>
+      </div>
+      <div class="dialog-field">
+        <label for="edit-priority">Prioridad</label>
+        <select id="edit-priority">
+          <option value="LOW">Baja</option>
+          <option value="MEDIUM">Media</option>
+          <option value="HIGH">Alta</option>
+        </select>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn-cancel" id="dialog-cancel">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
